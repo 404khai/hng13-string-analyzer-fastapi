@@ -21,6 +21,33 @@ def create_string(data: schemas.StringCreate, db: Session = Depends(get_db)):
         "created_at": record.created_at
     }
 
+# Natural Language Filtering
+@router.get("/filter-by-natural-language")
+def natural_filter(query: str, db: Session = Depends(get_db)):
+    try:
+        filters = nlp_parser.parse_query(query)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    records = crud.get_all_strings(db, filters)
+    data = []
+    for r in records:
+        props = crud.utils.analyze_string(r.value)
+        data.append({
+            "id": r.id,
+            "value": r.value,
+            "properties": props,
+            "created_at": r.created_at
+        })
+    return {
+        "data": data,
+        "count": len(data),
+        "interpreted_query": {
+            "original": query,
+            "parsed_filters": filters
+        }
+    }
+
+
 # Get Specific String
 @router.get("/{string_value}", response_model=schemas.StringResponse)
 def get_string(string_value: str, db: Session = Depends(get_db)):
@@ -69,31 +96,6 @@ def list_strings(
     }
 
 
-# Natural Language Filtering
-@router.get("/filter-by-natural-language")
-def natural_filter(query: str, db: Session = Depends(get_db)):
-    try:
-        filters = nlp_parser.parse_query(query)
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
-    records = crud.get_all_strings(db, filters)
-    data = []
-    for r in records:
-        props = crud.utils.analyze_string(r.value)
-        data.append({
-            "id": r.id,
-            "value": r.value,
-            "properties": props,
-            "created_at": r.created_at
-        })
-    return {
-        "data": data,
-        "count": len(data),
-        "interpreted_query": {
-            "original": query,
-            "parsed_filters": filters
-        }
-    }
 
 # Delete Specific String
 @router.delete("/{string_value}", status_code=204)
