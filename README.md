@@ -20,8 +20,21 @@ This project was built as part of the **HNG13 Internship — Stage 1 Backend Tas
 - Filter results via query parameters or **natural language**
 - Handles duplicate entries gracefully
 - Returns structured JSON responses
-- Built with **FastAPI**, **SQLAlchemy**, and **SQLite/PostgreSQL**
+- Built with **FastAPI**, **SQLAlchemy**, and **PostgreSQL**
 - Includes CORS setup for frontend integration
+
+---
+## 💻 Tech Stack
+
+- `Backend:` FastAPI
+
+- `Language:` Python
+
+- `HTTP Client:` requests
+
+- `Environment Management:` python-dotenv
+
+- `Deployment:` Railway
 
 ---
 
@@ -60,9 +73,8 @@ This project was built as part of the **HNG13 Internship — Stage 1 Backend Tas
     "word_count": 1,
     "sha256_hash": "7c1079393a5419a23c26fde0a94f45b939f6935facd5090263dc1e32f47969f3",
     "character_frequency_map": {
-      "D": 1,
+      "d": 2,
       "a": 1,
-      "d": 1
     }
   },
   "created_at": "2025-10-20T12:23:41.195727"
@@ -75,7 +87,9 @@ This project was built as part of the **HNG13 Internship — Stage 1 Backend Tas
 **GET** `/strings/filter-by-natural-language?query=strings longer than 3 characters`
 
 
-Example Response
+
+
+### Example Response
 ```json
 {
   "data": [
@@ -105,3 +119,61 @@ Example Response
     }
   }
 }
+
+
+```
+---
+
+## ⚙️ Environment variables
+- Create a .env file in the project root:
+```env
+DATABASE_URL=postgresql+psycopg://user:password@localhost/databaseName
+
+
+```
+## Cloning the repository
+```bash
+git clone https://github.com/404khai/hng13-string-analyzer-fastapi
+cd hng13-string-analyzer-fastapi
+
+
+```
+## Create and activate a virtual environment
+```bash
+python -m venv venv
+source venv/bin/activate     # On macOS/Linux
+venv\Scripts\activate        # On Windows
+
+
+```
+## List of dependencies - Sample requirements.txt
+```txt
+fastapi
+uvicorn
+sqlalchemy
+pydantic
+python-dotenv
+psycopg2-binary
+
+
+```
+## Install dependencies
+```bash
+pip install -r requirements.txt
+
+
+``` Create a .env file
+```bash
+cp .env.example .env
+
+
+```
+## Start the development server
+```bash
+uvicorn main:app --reload
+
+
+```
+## Live access to endpoint at
+```bash
+https://hng13-profile-api-django-production.up.railway.app/me
