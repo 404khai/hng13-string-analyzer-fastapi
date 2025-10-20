@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from app import models, schemas, database
+from app import models, schemas, database, crud, nlp_parser
 
 
 router = APIRouter(prefix="/strings", tags=["Strings"])
@@ -13,7 +13,7 @@ def get_db():
         db.close()
 
 
-@app.post("/strings", status_code=201, response_model=schemas.StringResponse)
+@router.post("/", status_code=201, response_model=schemas.StringResponse)
 def create_string(data: schemas.StringCreate, db: Session = Depends(get_db)):
     if not isinstance(data.value, str):
         raise HTTPException(status_code=422, detail="Invalid data type for value")
@@ -28,7 +28,7 @@ def create_string(data: schemas.StringCreate, db: Session = Depends(get_db)):
         "created_at": record.created_at
     }
 
-@app.get("/strings/{string_value}", response_model=schemas.StringResponse)
+@router.get("/strings/{string_value}", response_model=schemas.StringResponse)
 def get_string(string_value: str, db: Session = Depends(get_db)):
     record = crud.get_string(db, string_value)
     if not record:
@@ -41,7 +41,7 @@ def get_string(string_value: str, db: Session = Depends(get_db)):
         "created_at": record.created_at
     }
 
-@app.get("/strings")
+@router.get("/strings")
 def list_strings(
     is_palindrome: bool | None = None,
     min_length: int | None = None,
@@ -73,7 +73,7 @@ def list_strings(
         "filters_applied": {k: v for k, v in filters.items() if v is not None}
     }
 
-@app.get("/strings/filter-by-natural-language")
+@router.get("/strings/filter-by-natural-language")
 def natural_filter(query: str, db: Session = Depends(get_db)):
     try:
         filters = nlp_parser.parse_query(query)
@@ -98,7 +98,7 @@ def natural_filter(query: str, db: Session = Depends(get_db)):
         }
     }
 
-@app.delete("/strings/{string_value}", status_code=204)
+@router.delete("/strings/{string_value}", status_code=204)
 def delete_string(string_value: str, db: Session = Depends(get_db)):
     success = crud.delete_string(db, string_value)
     if not success:
