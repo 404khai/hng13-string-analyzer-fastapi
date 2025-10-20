@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from . import models, utils
+from app import models, utils
 
 def create_string(db: Session, value: str):
     props = utils.analyze_string(value)
@@ -21,8 +21,10 @@ def create_string(db: Session, value: str):
     db.refresh(record)
     return record
 
+
 def get_string(db: Session, value: str):
     return db.query(models.StringRecord).filter(models.StringRecord.value == value).first()
+
 
 def delete_string(db: Session, value: str):
     record = get_string(db, value)
@@ -31,6 +33,7 @@ def delete_string(db: Session, value: str):
     db.delete(record)
     db.commit()
     return True
+
 
 def get_all_strings(db: Session, filters: dict):
     query = db.query(models.StringRecord)

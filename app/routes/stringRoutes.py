@@ -1,19 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app import models, schemas, database, crud, nlp_parser
-
+from app.database import get_db
 
 router = APIRouter(prefix="/strings", tags=["Strings"])
 
-def get_db():
-    db = database.SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-
-@router.post("/", status_code=201, response_model=schemas.StringResponse)
+# Create / Analyze String
+@router.post("", status_code=201, response_model=schemas.StringResponse)
 def create_string(data: schemas.StringCreate, db: Session = Depends(get_db)):
     if not isinstance(data.value, str):
         raise HTTPException(status_code=422, detail="Invalid data type for value")
@@ -28,7 +21,8 @@ def create_string(data: schemas.StringCreate, db: Session = Depends(get_db)):
         "created_at": record.created_at
     }
 
-@router.get("/strings/{string_value}", response_model=schemas.StringResponse)
+# Get Specific String
+@router.get("/{string_value}", response_model=schemas.StringResponse)
 def get_string(string_value: str, db: Session = Depends(get_db)):
     record = crud.get_string(db, string_value)
     if not record:
@@ -41,7 +35,8 @@ def get_string(string_value: str, db: Session = Depends(get_db)):
         "created_at": record.created_at
     }
 
-@router.get("/strings")
+# Get All Strings with Filtering
+@router.get("")
 def list_strings(
     is_palindrome: bool | None = None,
     min_length: int | None = None,
@@ -73,7 +68,9 @@ def list_strings(
         "filters_applied": {k: v for k, v in filters.items() if v is not None}
     }
 
-@router.get("/strings/filter-by-natural-language")
+
+# Natural Language Filtering
+@router.get("/filter-by-natural-language")
 def natural_filter(query: str, db: Session = Depends(get_db)):
     try:
         filters = nlp_parser.parse_query(query)
@@ -98,7 +95,8 @@ def natural_filter(query: str, db: Session = Depends(get_db)):
         }
     }
 
-@router.delete("/strings/{string_value}", status_code=204)
+# Delete Specific String
+@router.delete("/{string_value}", status_code=204)
 def delete_string(string_value: str, db: Session = Depends(get_db)):
     success = crud.delete_string(db, string_value)
     if not success:

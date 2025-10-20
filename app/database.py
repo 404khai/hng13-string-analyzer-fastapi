@@ -24,7 +24,7 @@ Base = declarative_base()
 
 
 # ✅ Add this function so it can be imported anywhere
-def getDb():
+def get_db():
     db = SessionLocal()
     try:
         yield db

@@ -13,6 +13,7 @@ origins = [
     "http://127.0.0.1:5173",
     # add others if needed, e.g. deployed URLs
 ]
+
 # CORS
 app.add_middleware(
     CORSMiddleware,
