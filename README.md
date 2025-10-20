@@ -124,8 +124,14 @@ This project was built as part of the **HNG13 Internship — Stage 1 Backend Tas
 ```
 ---
 
-## ⚙️ Environment variables
+## Create a .env file
 - Create a .env file in the project root:
+```bash
+cp .env.example .env
+
+```
+## ⚙️ Environment variables
+- Then edit .env with your preferred database connection string.
 ```env
 DATABASE_URL=postgresql+psycopg://user:password@localhost/databaseName
 
@@ -153,18 +159,13 @@ uvicorn
 sqlalchemy
 pydantic
 python-dotenv
-psycopg2-binary
+psycopg[binary]==3.2.3
 
 
 ```
 ## Install dependencies
 ```bash
 pip install -r requirements.txt
-
-
-``` Create a .env file
-```bash
-cp .env.example .env
 
 
 ```
