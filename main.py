@@ -9,8 +9,10 @@ models.Base.metadata.create_all(bind=database.engine)
 app = FastAPI(title="String Analyzer Service", docs_url="/docs", redoc_url="/redoc", openapi_url="/openapi.json")
 
 origins = [
+    "http://localhost",
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "*",
     # add others if needed, e.g. deployed URLs
 ]
 
